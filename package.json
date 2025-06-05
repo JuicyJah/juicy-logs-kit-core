@@ -1,0 +1,30 @@
+{
+  "name": "@juicyjah/juicy-logs-kit-core",
+  "version": "0.1.0",
+  "description": "Logging tool for sending app logs and events to Juicy Logs from JavaScript",
+  "type": "module",
+  "main": "bin/index.js",
+  "bin": {
+    "juicy-logs-kit-svelte": "bin/index.js"
+  },
+  "scripts": {
+    "start": "node bin/index.js"
+  },
+  "keywords": [
+    "javascript",
+    "logs",
+    "events",
+    "juicyjah",
+    "pubsub"
+  ],
+  "author": "JuicyJah",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JuicyJah/juicy-logs-kit-core.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JuicyJah/juicy-logs-kit-core/issues"
+  },
+  "homepage": "https://github.com/JuicyJah/juicy-logs-kit-core#readme"
+}
