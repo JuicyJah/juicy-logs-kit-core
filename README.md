@@ -32,11 +32,25 @@ JUICY_LOGS_SOURCE_NAME=your-app-name-here
 
 ```
 
+Alternatively you can directly pass the url, token, and source name to the Event and Logger constructors as config overrides to the default config behavior. See the configuration section for more detail.
+
+Example:
+```javascript
+const logger = new Logger({
+  ...HTTP_CONFIG_OVERRIDES // (see section section on configuration)
+}, {
+  url: "https://logs.juicyjah.com",
+  token: "your-token-here",
+  source: "your-app-name-here"
+})
+```
+
+
 4. Access your logs at https://logs.juicyjah.com
 
 ## Configure your logs
 
-You can customize the logging behavior by passing a configuration object when initializing the Logger:
+You can customize the logging behavior by passing a configuration object when initializing the Logger to override the HTTP_CONFIG:
 
 ```javascript
 // customer_logger.js
