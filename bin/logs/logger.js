@@ -1,4 +1,6 @@
-import getConfig from '../config.js'
+import { JuicyLogsBaseConfig } from '../config.js'
+
+const ERROR_PREFIX = 'JUICY_LOGS: Error sending log:'
 
 function addLogLevelToPayload(payload, level) {
   if (typeof payload === 'string') {
@@ -7,36 +9,6 @@ function addLogLevelToPayload(payload, level) {
     return { ...payload, level }
   } else {
     return { message: 'No message provided', level }
-  }
-}
-
-async function sendLog(config, data) {
-  if (!config) return
-  const { token, url, source } = config
-
-  const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`
-  }
-
-  const body = JSON.stringify(new Log(data, source, config))
-
-  if (config.console) {
-    console.log(data)
-  }
-
-  try {
-    const response = await fetch(`${url}/api/logs`, {
-      method: 'POST',
-      headers,
-      body
-    })
-
-    if (!response.ok) {
-      console.error('JUICY_LOGS:Error sending log:', response.statusText)
-    }
-  } catch (error) {
-    console.error('JUICY_LOGS: Error sending log:', error)
   }
 }
 
@@ -63,66 +35,97 @@ class Log {
 }
 
 export default class Logger {
-  constructor() {
+  constructor(configOverrides) {
+    this.config = new JuicyLogsBaseConfig(configOverrides)
   }
 
-  static async log(...args) {
-    return await new Logger().log(...args)
+  static async sendLog(config, data) {
+    if (!config) return
+    const { token, url, source } = config
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+
+    const body = JSON.stringify(new Log(data, source, config))
+
+    if (config.console) {
+      console.log(data)
+    }
+
+    try {
+      const response = await fetch(`${url}/api/logs`, {
+        method: 'POST',
+        headers,
+        body
+      })
+
+      if (!response.ok) {
+        console.error(ERROR_PREFIX, response.statusText)
+      }
+    } catch (error) {
+      console.error(ERROR_PREFIX, error)
+    }
   }
 
-  async log(messageOrData, overrides = {}) {
-    await sendLog(getConfig(overrides), messageOrData)
+  static async log(messageOrData, config) {
+    return await new Logger(config).log(messageOrData)
   }
 
-  static async error(...args) {
-    return await new Logger().error(...args)
+  async log(messageOrData) {
+    return await Logger.sendLog(this.config, messageOrData)
   }
 
-  async error(messageOrData, overrides = {}) {
-    return await Logger.log(addLogLevelToPayload(messageOrData, 'ERROR'), overrides)
+  static async error(messageOrData, config) {
+    return await new Logger(config).error(messageOrData)
   }
 
-  static async info(...args) {
-    return await new Logger().info(...args)
+  async error(messageOrData) {
+    return await this.log(addLogLevelToPayload(messageOrData, 'ERROR'))
   }
 
-  async info(messageOrData, overrides = {}) {
-    return await Logger.log(addLogLevelToPayload(messageOrData, 'INFO'), overrides)
+  static async info(messageOrData, config) {
+    return await new Logger(config).info(messageOrData)
   }
 
-  static async warn(...args) {
-    return await new Logger().warn(...args)
+  async info(messageOrData) {
+    return await this.log(addLogLevelToPayload(messageOrData, 'INFO'))
   }
 
-  async warn(messageOrData, overrides = {}) {
-    return await Logger.log(addLogLevelToPayload(messageOrData, 'WARN'), overrides)
+  static async warn(messageOrData, config) {
+    return await new Logger(config).warn(messageOrData)
   }
 
-  static async debug(...args) {
-    return await new Logger().debug(...args)
+  async warn(messageOrData) {
+    return await this.log(addLogLevelToPayload(messageOrData, 'WARN'))
   }
 
-  async debug(messageOrData, overrides = {}) {
-    return await Logger.log(addLogLevelToPayload(messageOrData, 'DEBUG'), overrides)
+  static async debug(messageOrData, config) {
+    return await new Logger(config).debug(messageOrData)
   }
 
-  static async logInferLevel(...args) {
-    return await new Logger().logInferLevel(...args)
+  async debug(messageOrData) {
+    return await this.log(addLogLevelToPayload(messageOrData, 'DEBUG'))
   }
 
-  async logInferLevel(messageOrData, overrides = {}) {
+  static async logInferLevel(messageOrData, config) {
+    return await new Logger(config).logInferLevel(messageOrData)
+  }
+
+  async logInferLevel(messageOrData) {
     if (typeof messageOrData === 'string' || !messageOrData.status) {
-      return await this.info(messageOrData, overrides)
+      return await this.info(messageOrData)
     }
 
     const status = messageOrData.status
 
     if (status >= 400)
-      return await this.warn(messageOrData, overrides)
+      return await this.warn(messageOrData)
 
     if (status >= 500)
-      return await this.error(messageOrData, overrides)
+      return await this.error(messageOrData)
 
-    return await this.info(messageOrData, overrides)
+    return await this.info(messageOrData)
   }
 }

@@ -1,5 +1,3 @@
-import Logger from './logs/logger.js'
-
 const HTTP_REQUEST_CODES = [
   100,
   101,
@@ -91,33 +89,8 @@ const DEFAULT_CONFIG = {
   exclude_routes: []
 }
 
-export default class ConfiguredLogger extends Logger {
-  constructor(config) {
-    super()
-
-    this.config = {
-      ...DEFAULT_CONFIG,
-      ...config
-    }
-  }
-
-  async error(...args) {
-    if (!this.config.log_error) return
-    return await super.error(...args)
-  }
-
-  async info(...args) {
-    if (!this.config.log_info) return
-    return await super.info(...args)
-  }
-
-  async debug(...args) {
-    if (!this.config.log_debug) return
-    return await super.debug(...args)
-  }
-
-  async warn(...args) {
-    if (!this.config.log_warn) return
-    return await super.warn(...args)
+export default class HttpConfig {
+  constructor(overrides = {}) {
+    Object.assign(this, DEFAULT_CONFIG, overrides)
   }
 }

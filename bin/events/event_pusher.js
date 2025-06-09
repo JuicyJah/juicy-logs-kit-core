@@ -1,4 +1,4 @@
-import getConfig from '../config.js'
+import { JuicyLogsBaseConfig } from '../config.js'
 
 async function send(config, data) {
   if (!config) return
@@ -39,6 +39,7 @@ class Event {
   type
   message
   data
+
   constructor(data, source, config = {}) {
     if (typeof data === 'string') {
       this.message = data
@@ -59,14 +60,14 @@ class Event {
 
 export default class EventPusher {
   constructor(configOverrides) {
-    this.config = getConfig(configOverrides)
+    this.config = new JuicyLogsBaseConfig(configOverrides)
   }
 
-  static async push(...args) {
-    return await new EventPusher().push(...args)
+  static async push(messageOrData, configOverrides) {
+    return await new EventPusher(configOverrides).push(messageOrData)
   }
 
-  async push(messageOrData, overrides = {}) {
-    await send(getConfig({ ...this.config, ...overrides }), messageOrData)
+  async push(messageOrData) {
+    return await send(this.config, messageOrData)
   }
 }
