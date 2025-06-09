@@ -1,6 +1,6 @@
 {
   "name": "@juicyjah/juicy-logs-kit-core",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Logging tool for sending app logs and events to Juicy Logs from JavaScript",
   "type": "module",
   "main": "bin/index.js",

@@ -1,4 +1,5 @@
-import JuicyLogsBaseConfig from "./config/base_config"
-import HttpConfig from "./config/http_config"
+import JuicyLogsBaseConfig from "./config/base_config.js"
+import HttpConfig from "./config/http_config.js"
 
-export { JuicyLogsBaseConfig, HttpConfig }
+export { JuicyLogsBaseConfig }
+export { HttpConfig }
