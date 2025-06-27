@@ -35,8 +35,9 @@ class Log {
 }
 
 export default class Logger {
+  baseConfigClass = JuicyLogsBaseConfig
   constructor(configOverrides) {
-    this.config = new JuicyLogsBaseConfig(configOverrides)
+    this.config = new this.baseConfigClass(configOverrides)
   }
 
   static async sendLog(config, data) {

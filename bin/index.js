@@ -1,4 +1,4 @@
-import packageJSON from "../package.json" assert { type: "json" }
+import packageJSON from "../package.json" with { type: "json" }
 import { JuicyLogsBaseConfig } from "./config.js"
 import ConfiguredLogger from "./logs/configured_logger.js"
 import EventPusher from "./events/event_pusher.js"
